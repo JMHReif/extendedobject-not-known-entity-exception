@@ -1,0 +1,52 @@
+= Sample application for mapping child entity
+
+This application is in response to the following StackOverflow question: https://stackoverflow.com/questions/76659774/neo4j-com-example-entity-extendedobject-is-not-a-known-entity-when-mapping-dat
+
+== Data creation for testing this application
+
+* Execute the following statement in a Neo4j instance (such as https://bit.ly/neo4j-aura[AuraDB free tier^]) in order to test the application against the same data as the author of this repository.
+
+* Note that you will need to update the property values in the `application.properties` file to your specific database credentials
+
+[source,cypher]
+----
+MERGE (p:Person {name: "Alpha"})
+MERGE (p2:Person:Child {name: "Bravo", age: 5})
+MERGE (p3:Person:Child {name: "Charlie", age: 3})
+MERGE (p4:Person:Child {name: "Delta", age: 1})
+MERGE (p)-[r:PARENT_OF]->(p2)
+MERGE (p)-[r2:PARENT_OF]->(p3)
+MERGE (p)-[r3:PARENT_OF]->(p4)
+RETURN *;
+----
+
+== Results
+
+* Access the REST endpoint (either via browser or `curl` command) to retrieve the results below.
+
+* Browser URL: `localhost:8080/persons/Alpha`
+* Curl command: `curl localhost:8080/persons/Alpha`
+
+* Output:
+```
+[
+    {
+        "id": 364,
+        "name": "Bravo",
+        "age": 5,
+        "readOnly": "a"
+    },
+    {
+        "id": 365,
+        "name": "Charlie",
+        "age": 3,
+        "readOnly": "b"
+    },
+    {
+        "id": 366,
+        "name": "Delta",
+        "age": 1,
+        "readOnly": "c"
+    }
+]
+```
